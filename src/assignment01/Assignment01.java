@@ -1,49 +1,44 @@
 package assignment01;
 import java.util.*;
 import java.io.*;
+import java.nio.file.*;
 
 public class Assignment01 {
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+
+        List<String> formulas = Files.readAllLines(Paths.get("C:/Users/Wansajee/Documents/NetBeansProjects/Assignment01/src/assignment01/formulas.txt"));
+        List<String> results = new ArrayList<>();
+        
+        for (String formula: formulas){
+            if (formula.trim().isEmpty()) {
+                continue;  // Skip empty lines
+            }
+            
+            String formulaCopy = formula;
+            if(!formulaCopy.trim().endsWith("=") && !CheckBrackets.areBracketBalanced(formula)){
+                results.add(formula +" E ");
+                continue;
+            }
+            
+            try{
+                formulaCopy = RemoveEqualSign.removeEqualSign(formulaCopy);
+                formulaCopy = ConvertToBrackets.convertToNormalBrackets(formulaCopy);
+
+                String result = EvaluatePostFix.evaluatePostFix(InfixToPostFix.infixToPostFix(formulaCopy));
+
+                results.add(formula+result);
+            }
+            catch(Exception e){
+                results.add(formula+" E ");
+            }
+        }
+        
+        Files.write(Paths.get("C:/Users/Wansajee/Documents/NetBeansProjects/Assignment01/src/assignment01/result.txt"), results);
+        
+        
+        
         //String exp = "a+b([c^d]-e)^(f+g*h)-i=";
-        
-        String exp = "12+(23*34)-23*(31/5)=";
-        
-        exp = RemoveEqualSign.removeEqualSign(exp);
-        
-        String exp_1 = ConvertToBrackets.convertToNormalBrackets(exp);
-        
-        System.out.print(exp_1+'\n');
-        
-        if(CheckBrackets.areBracketBalanced(exp_1)){
-            System.out.print("Formula is balanced.\n");
-        }
-        else{
-            System.out.print("Formula is not balanced.\n");
-        }
-        
-        exp_1 = InfixToPostFix.infixToPostFix(exp_1);
-        System.out.print(exp_1+'\n');
-        
-        String result = EvaluatePostFix.evaluatePostFix(exp_1);
-        System.out.print("Result:"+result+'\n');
+
         
     }
     
